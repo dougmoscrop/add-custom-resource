@@ -1,0 +1,38 @@
+{
+  "name": "add-custom-resource",
+  "version": "1.0.0",
+  "description": "A helper library to add custom resources to a CloudFormation template",
+  "main": "add-custom-resource.js",
+  "scripts": {
+    "test": "nyc --all ava",
+    "posttest": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dougmoscrop/add-custom-resource.git"
+  },
+  "keywords": [
+    "serverless",
+    "plugin",
+    "helper",
+    "custom",
+    "resource",
+    "aws"
+  ],
+  "author": "Doug Moscrop <doug.moscrop@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dougmoscrop/add-custom-resource/issues"
+  },
+  "homepage": "https://github.com/dougmoscrop/add-custom-resource#readme",
+  "devDependencies": {
+    "ava": "^0.21.0",
+    "eslint": "^4.3.0",
+    "nyc": "^11.1.0",
+    "proxyquire": "^1.8.0",
+    "sinon": "^3.0.0"
+  },
+  "dependencies": {
+    "escape-json-node": "^1.0.8"
+  }
+}
