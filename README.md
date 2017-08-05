@@ -42,7 +42,7 @@ You source code can use the aws-sdk and the cf-response library, which are built
 
 ```js
 const aws = require('aws-sdk');
-const response = require('cf-response');
+const response = require('cfn-response');
 
 const s3 = new aws.S3();
 
