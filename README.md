@@ -1,4 +1,4 @@
-# add-custom-resouce
+# add-custom-resource
 
 This is a library meant to be used in a Serverless plugin, when you need to add a custom resource. This allows you to execute arbitrary code within CloudFormation as part of deployment, allowing you do things like call the aws-sdk in cases where CloudFormation does not support the feature you need to deploy/configure.
 
