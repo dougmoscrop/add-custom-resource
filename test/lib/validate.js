@@ -27,3 +27,8 @@ test('throws when missing sourceCodePath', t => {
 
   t.true(err.message === 'must specify options.sourceCodePath for custom resource code');
 });
+
+test('passes when happy', t => {
+  validate({ name: 'test', sourceCodePath: 'foo' });
+  t.pass();
+});

@@ -5,7 +5,7 @@ const test = require('ava');
 const makeFunction = require('../../lib/make-function');
 
 test('returns the correct type', t => {
-  t.true( makeFunction().Type === 'AWS::Lambda::Function');
+  t.true(makeFunction().Type === 'AWS::Lambda::Function');
 });
 
 test('adds the soure code', t => {
