@@ -35,9 +35,3 @@ test('has appropriate prefix in log group name', t => {
   
   t.deepEqual(logGroupName['Fn::Join'][1][0], '/aws/lambda/');
 });
-
-test('has random suffix in log group name', t => {
-  const logGroupName = makeLogGroup('abc', false).Properties.LogGroupName;
-  
-  t.deepEqual(typeof logGroupName['Fn::Join'][1][2], 'string');
-});

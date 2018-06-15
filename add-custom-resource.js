@@ -24,6 +24,6 @@ module.exports = function addCustomResource(template, config) {
 
   addResource(template, roleName, makeRole(config.role));
   addResource(template, functionName, makeFunction(sourceCodeLines, roleName));
-  addResource(template, logGroupName, makeLogGroup(functionName));
+  addResource(template, logGroupName, makeLogGroup(functionName, config.logRetentionInDays));
   addResource(template, resourceName, makeResource(name, functionName, config.resource));
 };
