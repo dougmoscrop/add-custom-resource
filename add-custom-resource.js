@@ -7,23 +7,23 @@ const makeFunction = require('./lib/make-function');
 const makeLogGroup = require('./lib/make-log-group');
 const makeResource = require('./lib/make-resource');
 
-const addResource = require('./lib/add-resource');
-
 const validate = require('./lib/validate');
 
 module.exports = function addCustomResource(template, config) {
   validate(config);
 
-  const name = config.name;
+  const resourceName = config.name;
+  const functionName = config.functionName || resourceName;
+
   const sourceCodeLines = getSourceCodeLines(config.sourceCodePath);
 
-  const roleName = `Custom${name}Role`;
-  const functionName = `Custom${name}Function`;
-  const logGroupName = `Custom${name}LogGroup`;
-  const resourceName = `Custom${name}Resource`;
+  const roleId = `Custom${functionName}Role`;
+  const functionId = `Custom${functionName}Function`;
+  const logGroupId = `Custom${functionName}LogGroup`;
+  const resourceId = `Custom${resourceName}Resource`;
 
-  addResource(template, roleName, makeRole(config.role));
-  addResource(template, functionName, makeFunction(sourceCodeLines, roleName));
-  addResource(template, logGroupName, makeLogGroup(functionName, config.logRetentionInDays));
-  addResource(template, resourceName, makeResource(name, functionName, config.resource));
+  template.Resources[roleId] = makeRole(config.role);
+  template.Resources[functionId] = makeFunction(sourceCodeLines, roleId);
+  template.Resources[logGroupId] = makeLogGroup(functionId, config.logRetentionInDays);
+  template.Resources[resourceId] = makeResource(resourceName, functionId, config.resource);
 };
