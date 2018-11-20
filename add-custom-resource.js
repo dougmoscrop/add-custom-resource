@@ -32,7 +32,7 @@ function ensureFunctionResources(template, config) {
 
       template.Resources[logGroupId] = makeLogGroup(functionId, config.logRetentionInDays);
       
-      return functionId;
+      return { functionId, logGroupId };
     });
 }
 
@@ -43,8 +43,8 @@ module.exports = function addCustomResource(template, config) {
   const resourceId = `Custom${resourceName}Resource`;
 
   return ensureFunctionResources(template, config)
-    .then(functionId => {
-      template.Resources[resourceId] = makeResource(resourceName, functionId, config.resource);
+    .then(({ functionId, logGroupId }) => {
+      template.Resources[resourceId] = makeResource(resourceName, functionId, logGroupId, config.resource);
       return resourceId;
     });
 };
