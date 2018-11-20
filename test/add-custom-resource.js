@@ -12,7 +12,7 @@ test('exports a function', t => {
 
 test('calls appropriate methods', t => {
   const validate = sinon.mock();
-  const getSourceCodeLines = sinon.mock().returns([]);
+  const getSourceCodeLines = sinon.mock().resolves([]);
   const makeRole = sinon.mock();
   const makeResource = sinon.mock();
   const makeFunction = sinon.mock();
@@ -27,23 +27,24 @@ test('calls appropriate methods', t => {
     './lib/make-function': makeFunction,
   });
 
-  addCustomResource({ Resources: {} }, {
-    name: 'test'
-  });
+  const Resources = {};
 
-  validate.verify();
-  getSourceCodeLines.verify();
-  makeRole.verify();
-  makeFunction.verify();
-  makeResource.verify();
-  makeLogGroup.verify();
+  return addCustomResource({ Resources }, { name: 'test' })
+    .then(() => {
+      validate.verify();
+      getSourceCodeLines.verify();
+      makeRole.verify();
+      makeFunction.verify();
+      makeResource.verify();
+      makeLogGroup.verify();
 
-  t.pass();
+      t.is(Object.keys(Resources).length, 4);
+    });
 });
 
 test('will only create one function, log group and role for multiple resources', t => {
   const validate = sinon.stub();
-  const getSourceCodeLines = sinon.stub().returns([]);
+  const getSourceCodeLines = sinon.stub().resolves([]);
   const makeRole = sinon.stub();
   const makeResource = sinon.stub();
   const makeFunction = sinon.stub();
@@ -60,22 +61,18 @@ test('will only create one function, log group and role for multiple resources',
 
   const Resources = {};
 
-  addCustomResource({ Resources }, {
-    name: 'Test',
-    functionName: 'Test',
-  });
-
-  addCustomResource({ Resources }, {
-    name: 'Test2',
-    functionName: 'Test',
-  });
-
-  t.is(Object.keys(Resources).length, 5);
+  return addCustomResource({ Resources }, { name: 'Test', resourceName: 'Test' })
+    .then(() => {
+      return addCustomResource({ Resources }, { name: 'Test', resourceName: 'Test2' });
+    })
+    .then(() => {
+      t.is(Object.keys(Resources).length, 5);
+    });
 });
 
 test('supports a roleArn', t => {
   const validate = sinon.mock();
-  const getSourceCodeLines = sinon.mock().returns([]);
+  const getSourceCodeLines = sinon.mock().resolves([]);
   const makeRole = sinon.stub().throws();
   const makeResource = sinon.mock();
   const makeFunction = sinon.mock();
@@ -92,16 +89,14 @@ test('supports a roleArn', t => {
 
   const Resources = {};
 
-  addCustomResource({ Resources }, {
-    name: 'test',
-    roleArn: 'foo'
-  });
-
-  validate.verify();
-  getSourceCodeLines.verify();
-  makeFunction.verify();
-  makeResource.verify();
-  makeLogGroup.verify();
-
-  t.is(Object.keys(Resources).length, 3);
+  return addCustomResource({ Resources }, { name: 'test', roleArn: 'foo' })
+    .then(() => {
+      validate.verify();
+      getSourceCodeLines.verify();
+      makeFunction.verify();
+      makeResource.verify();
+      makeLogGroup.verify();
+    
+      t.is(Object.keys(Resources).length, 3);
+    });
 });

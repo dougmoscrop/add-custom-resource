@@ -10,37 +10,51 @@ test('reads, splits and escapes source', t => {
     .onCall(1).returns('bar')
     .onCall(2).returns('baz');
 
-  const readFileSync = sinon.mock().returns(Buffer.from(`module.exports.handler = function() {\r\nreturn;\r\n}`));
+  const bundle = {
+    generate: sinon.mock().resolves({ code: 'foo\nfoo\n\foo', exports: ['handler']})
+  };
+
+  const rollup = {
+    rollup: sinon.mock().resolves(bundle)
+  };
 
   const getSourceCodeLines = proxyquire('../../lib/get-source-code-lines', {
     'escape-json-node': escapeJsonNode,
-    'fs': {
-      readFileSync
-    }
+    'rollup': rollup,
   });
 
-  const sourceCodeLines = getSourceCodeLines();
+  return getSourceCodeLines()
+    .then(sourceCodeLines => {
+      rollup.rollup.verify();
+      escapeJsonNode.verify();
 
-  readFileSync.verify();
-  escapeJsonNode.verify();
-
-  t.true(sourceCodeLines[0] === 'foo');
-  t.true(sourceCodeLines[1] === 'bar');
-  t.true(sourceCodeLines[2] === 'baz');
+      t.true(sourceCodeLines[0] === 'foo');
+      t.true(sourceCodeLines[1] === 'bar');
+      t.true(sourceCodeLines[2] === 'baz');
+    });
 });
 
 test('throws if it lacks module.exports.handler = ', t => {
   const escapeJsonNode = sinon.mock().exactly(2).onCall(0).returns('foo').onCall(1).returns('bar');
-  const readFileSync = sinon.mock().returns(Buffer.from(`asdf\r\nqwerty`));
+
+  const bundle = {
+    generate: sinon.stub().resolves({ code: '', exports: []})
+  };
+
+  const rollup = {
+    rollup: sinon.stub().resolves(bundle)
+  };
 
   const getSourceCodeLines = proxyquire('../../lib/get-source-code-lines', {
     'escape-json-node': escapeJsonNode,
-    'fs': {
-      readFileSync
-    }
+    'rollup': rollup,
   });
 
-  const err = t.throws(() => getSourceCodeLines());
-
-  t.true(err.message === `missing 'module.exports.handler =' in source code`);
+  return getSourceCodeLines() 
+    .then(() => {
+      t.fail('should not reach here');
+    })
+    .catch(err => {
+      t.true(err.message === `missing 'module.exports.handler =' in source code`);
+    });
 });
