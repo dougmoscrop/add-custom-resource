@@ -27,10 +27,10 @@
   "homepage": "https://github.com/dougmoscrop/add-custom-resource#readme",
   "devDependencies": {
     "ava": "^0.25.0",
-    "eslint": "^4.3.0",
-    "nyc": "^12.0.2",
-    "proxyquire": "^2.0.1",
-    "sinon": "^6.0.0"
+    "eslint": "^5.9.0",
+    "nyc": "^13.1.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^7.1.1"
   },
   "dependencies": {
     "escape-json-node": "^2.0.0"
