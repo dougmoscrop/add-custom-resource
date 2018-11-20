@@ -21,7 +21,7 @@ class MyPlugin {
   doStuff() {
     const template = this.serverless.service.provider.compiledCloudFormationTemplate;
 
-    addCustomResource(template, {
+    return addCustomResource(template, {
       name: 'MyResource',
       sourceCodePath: path.join(__dirname, 'my-source-code.js')
     });
@@ -67,3 +67,33 @@ module.exports.handler = function(event, context) {
    });
 };
 ```
+
+## Function Reuse
+
+If you configure a `resourceName` in addition to `name`, then multiple resources can be created while re-using the same function.
+
+For example:
+
+```js
+await addCustomResource(template, {
+  name: 'CustomThing',
+  resourceName: 'CustomThingFoo'
+  sourceCodePath: path.join(__dirname, 'my-source-code.js')
+});
+
+await addCustomResource(template, {
+  name: 'CustomThing',
+  resourceName: 'CustomThingBar'
+  sourceCodePath: path.join(__dirname, 'my-source-code.js')
+});
+```
+
+This will only add the function, log group and role for `CustomThing` _once_, while creating two separate custom resources: `CustomThingFoo` and `CustomThingBar`, each backed by the same Lambda function (`CustomThingFunction`);
+
+## Custom Role
+
+You can specify a `roleArn` and this library will not create a role.
+
+## Dependencies
+
+As of `3.0.0`, you can include dependencies in your Lambda resource and this library will use Rollup to bundle them.
