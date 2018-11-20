@@ -36,7 +36,6 @@
     "escape-json-node": "^2.0.0",
     "rollup": "^0.67.3",
     "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-ignore": "^1.0.4",
     "rollup-plugin-node-resolve": "^3.4.0"
   }
 }
