@@ -10,7 +10,7 @@ test('exports a function', t => {
   t.true(typeof addCustomResource === 'function');
 });
 
-test('calls appropriate methods', t => {
+test('calls appropriate methods and returns resourceId', t => {
   const validate = sinon.mock();
   const getSourceCodeLines = sinon.mock().resolves([]);
   const makeRole = sinon.mock();
@@ -30,7 +30,7 @@ test('calls appropriate methods', t => {
   const Resources = {};
 
   return addCustomResource({ Resources }, { name: 'test' })
-    .then(() => {
+    .then(resourceId => {
       validate.verify();
       getSourceCodeLines.verify();
       makeRole.verify();
@@ -39,6 +39,7 @@ test('calls appropriate methods', t => {
       makeLogGroup.verify();
 
       t.is(Object.keys(Resources).length, 4);
+      t.is(resourceId, 'CustomtestResource');
     });
 });
 

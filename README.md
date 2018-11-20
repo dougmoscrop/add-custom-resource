@@ -97,3 +97,13 @@ You can specify a `roleArn` and this library will not create a role.
 ## Dependencies
 
 As of `3.0.0`, you can include dependencies in your Lambda resource and this library will use Rollup to bundle them.
+
+## Return Value
+
+The promise returned by `addCustomResource` will resolve to the logicalId that the resource was added under.
+
+```js
+const logicalId = await addCustomResource(...);
+
+// you can use this elsewhere in your template, Fn::GetAtt: [logicalId, ... ]
+```

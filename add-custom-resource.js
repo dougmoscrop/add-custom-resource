@@ -45,5 +45,6 @@ module.exports = function addCustomResource(template, config) {
   return ensureFunctionResources(template, config)
     .then(functionId => {
       template.Resources[resourceId] = makeResource(resourceName, functionId, config.resource);
+      return resourceId;
     });
 };
