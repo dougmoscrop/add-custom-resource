@@ -72,3 +72,36 @@ test('will only create one function, log group and role for multiple resources',
 
   t.is(Object.keys(Resources).length, 5);
 });
+
+test('supports a roleArn', t => {
+  const validate = sinon.mock();
+  const getSourceCodeLines = sinon.mock().returns([]);
+  const makeRole = sinon.stub().throws();
+  const makeResource = sinon.mock();
+  const makeFunction = sinon.mock();
+  const makeLogGroup = sinon.mock();
+
+  const addCustomResource = proxyquire('../', {
+    './lib/validate': validate,
+    './lib/get-source-code-lines': getSourceCodeLines,
+    './lib/make-role': makeRole,
+    './lib/make-log-group': makeLogGroup,
+    './lib/make-resource': makeResource,
+    './lib/make-function': makeFunction,
+  });
+
+  const Resources = {};
+
+  addCustomResource({ Resources }, {
+    name: 'test',
+    roleArn: 'foo'
+  });
+
+  validate.verify();
+  getSourceCodeLines.verify();
+  makeFunction.verify();
+  makeResource.verify();
+  makeLogGroup.verify();
+
+  t.is(Object.keys(Resources).length, 3);
+});

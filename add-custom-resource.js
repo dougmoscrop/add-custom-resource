@@ -14,6 +14,7 @@ module.exports = function addCustomResource(template, config) {
 
   const resourceName = config.name;
   const functionName = config.functionName || resourceName;
+  const roleArn = config.roleArn;
 
   const sourceCodeLines = getSourceCodeLines(config.sourceCodePath);
 
@@ -22,8 +23,13 @@ module.exports = function addCustomResource(template, config) {
   const logGroupId = `Custom${functionName}LogGroup`;
   const resourceId = `Custom${resourceName}Resource`;
 
-  template.Resources[roleId] = makeRole(config.role);
-  template.Resources[functionId] = makeFunction(sourceCodeLines, roleId);
+  if (roleArn) {
+    template.Resources[functionId] = makeFunction(sourceCodeLines, roleArn, true);
+  } else {
+    template.Resources[roleId] = makeRole(config.role);
+    template.Resources[functionId] = makeFunction(sourceCodeLines, roleId);
+  }
+
   template.Resources[logGroupId] = makeLogGroup(functionId, config.logRetentionInDays);
   template.Resources[resourceId] = makeResource(resourceName, functionId, config.resource);
 };
