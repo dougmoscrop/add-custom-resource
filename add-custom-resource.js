@@ -10,17 +10,20 @@ const makeResource = require('./lib/make-resource');
 const validate = require('./lib/validate');
 
 function ensureFunctionResources(template, config) {
+
   const functionName = config.name;
   const functionId = `Custom${functionName}Function`;
   const logGroupId = `Custom${functionName}LogGroup`;
   const roleArn = config.roleArn;
 
   if (functionId in template.Resources) {
-    return Promise.resolve(functionId);
+    return Promise.resolve({ functionId, logGroupId });
   }
 
   return getSourceCodeLines(config.sourceCodePath)
     .then(sourceCodeLines => {
+      template.Resources[logGroupId] = makeLogGroup(functionId, config.logRetentionInDays);
+      
       if (roleArn) {
         template.Resources[functionId] = makeFunction(sourceCodeLines, roleArn, true);
       } else {
@@ -29,8 +32,6 @@ function ensureFunctionResources(template, config) {
         template.Resources[roleId] = makeRole(config.role);
         template.Resources[functionId] = makeFunction(sourceCodeLines, roleId);
       }
-
-      template.Resources[logGroupId] = makeLogGroup(functionId, config.logRetentionInDays);
       
       return { functionId, logGroupId };
     });

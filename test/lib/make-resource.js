@@ -25,6 +25,10 @@ test('adds custom properties', t => {
 });
 
 test('adds custom dependencies', t => {
-  t.true(makeResource('test', 'functionId', 'logGroupId', { dependencies: ['bar', 'baz'] }).DependsOn[0] === 'bar');
-  t.true(makeResource('test', 'functionId', 'logGroupId', { dependencies: ['bar', 'baz'] }).DependsOn[1] === 'baz');
+  t.deepEqual(makeResource('test', 'functionId', 'logGroupId', { dependencies: ['bar', 'baz'] }).DependsOn, [
+    'functionId',
+    'logGroupId',
+    'bar',
+    'baz'
+  ]);
 });

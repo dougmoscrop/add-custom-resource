@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const test = require('ava');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
@@ -99,5 +101,27 @@ test('supports a roleArn', t => {
       makeLogGroup.verify();
     
       t.is(Object.keys(Resources).length, 3);
+    });
+});
+
+test('end to end', t => {
+  const addCustomResource = require('../');
+  const sourceCodePath = path.join(__dirname, 'fixtures', 'src.js');
+
+  const Resources = {};
+
+  return addCustomResource({ Resources }, { name: 'Test', resourceName: 'Test', sourceCodePath })
+    .then(() => {
+      return addCustomResource({ Resources }, { name: 'Test', resourceName: 'Test2', sourceCodePath });
+    })
+    .then(() => {
+      t.is(Object.keys(Resources).length, 5);
+      t.deepEqual(Resources.CustomTest2Resource.Properties.ServiceToken, {
+        'Fn::GetAtt': ['CustomTestFunction', 'Arn']
+      });
+      t.deepEqual(Resources.CustomTest2Resource.DependsOn, [
+        'CustomTestFunction',
+        'CustomTestLogGroup'
+      ]);
     });
 });
