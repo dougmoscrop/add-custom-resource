@@ -11,7 +11,7 @@ test('reads, splits and escapes source', t => {
     .onCall(2).returns('baz');
 
   const bundle = {
-    generate: sinon.mock().resolves({ code: 'foo\nfoo\n\foo', exports: ['handler']})
+    generate: sinon.mock().resolves({ output: [{ code: 'foo\nfoo\n\foo', exports: ['handler'] }] })
   };
 
   const rollup = {
@@ -38,7 +38,7 @@ test('throws if it lacks module.exports.handler = ', t => {
   const escapeJsonNode = sinon.mock().exactly(2).onCall(0).returns('foo').onCall(1).returns('bar');
 
   const bundle = {
-    generate: sinon.stub().resolves({ code: '', exports: []})
+    generate: sinon.stub().resolves({ output: [{ code: '', exports: [] }] })
   };
 
   const rollup = {
