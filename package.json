@@ -1,6 +1,6 @@
 {
   "name": "add-custom-resource",
-  "version": "3.3.2",
+  "version": "4.0.0",
   "description": "A helper library to add custom resources to a CloudFormation template",
   "main": "add-custom-resource.js",
   "scripts": {
